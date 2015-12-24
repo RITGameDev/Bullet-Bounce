@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Jukebox : MonoBehaviour {
-
 	public List<AudioClip> playlist;
-	AudioSource audio;
+
+	new AudioSource audio;
 
 	void Awake() {
 		audio = GetComponent<AudioSource>();

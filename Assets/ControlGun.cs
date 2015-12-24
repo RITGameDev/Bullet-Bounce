@@ -2,27 +2,32 @@
 using System.Collections;
 
 public class ControlGun : MonoBehaviour {
-
-	public KeyCode lRot, shoot, rRot;
 	public GameObject bullet;
-	Vector3 spinVect = new Vector3(0, 0, 100);
 
-	void Update () {
-		Movement();
-	}
+    int bulletIndex = 0;
+    int maxBullets = 50;
+
+    GameObject[] bullets;
+
+    void Start(){
+        bullets = new GameObject[maxBullets];
+        Vector2 offset = new Vector2(1000, 1000);
+
+        for (int i = 0; i < maxBullets; i++){
+            bullets[i] = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+        }
+    }
+
+	void Update (){
+        transform.rotation = transform.parent.rotation;
+        if (Input.GetMouseButtonDown(0))
+            Shoot();
+    }
 
 	/* Shoots a bullet. */
-	void Shoot() {
-		Instantiate(bullet, new Vector2(transform.position.x, transform.position.y), transform.rotation);
-	}
-
-	/* Rotates the gun either left or right; also handles shooting. */
-	void Movement() {
-		if (Input.GetKey(lRot)) {
-			transform.Rotate(spinVect * Time.deltaTime); }
-		else if (Input.GetKey(rRot)) {
-			transform.Rotate(-spinVect * Time.deltaTime); }
-		if (Input.GetKeyDown(shoot)) {
-			Shoot(); }
-	}
+	void Shoot(){
+        bullets[bulletIndex].gameObject.transform.GetComponent<Bullet>().Renew(transform.position, (transform.rotation * Vector3.up).normalized * 0.1f);
+        bulletIndex = (bulletIndex + 1) % maxBullets;
+        print("argh");
+    }
 }

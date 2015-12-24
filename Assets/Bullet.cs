@@ -2,42 +2,51 @@
 using System.Collections;
 
 public class Bullet : MonoBehaviour {
-
-	Vector2 moveVect = new Vector2(0, .25f);
-	Rigidbody2D rb;
-	Collider2D hitbox;
 	public AudioClip cancel;
 	public AudioClip bounce;
-	AudioSource audio;
 
-	/* Gets the components and moves the bullet. */
-	void Awake() {
+    float distanceTraveled = 0;
+    Vector3 originalPosition;
+
+    new AudioSource audio;
+    Rigidbody2D rb;
+    Collider2D hitbox;
+
+    /* Gets the components and moves the bullet. */
+    void Awake() {
+        originalPosition = transform.position;
 		hitbox = GetComponent<Collider2D>();
 		hitbox.enabled = false;
 		rb = GetComponent<Rigidbody2D>();
 		audio = GetComponent<AudioSource>();
-		rb.AddForce(moveVect);
-		Invoke("Harm", 0.2f);
+        Hide();
 	}
-
-	/* Makes the bullet harmful. */
-	void Harm() {
-		hitbox.enabled = true;
-	}
+    void Update(){
+        distanceTraveled = Mathf.Pow(Mathf.Pow(transform.position.x - originalPosition.x, 2) + Mathf.Pow(transform.position.y - originalPosition.y, 2), 0.5f);
+        if (!hitbox.enabled && distanceTraveled > 50)
+            hitbox.enabled = true;
+    }
 	/* Destroys the bullet; is called after the sound plays. */
-	void Destroy() {
-		Destroy(this.gameObject);
+	void Hide() {
+        transform.position = originalPosition = new Vector3(1000, 1000, 0);
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = 0;
+        hitbox.enabled = false;
 	}
-
+    public void Renew(Vector3 position, Vector3 rotation){
+        Hide();
+        transform.position = originalPosition = position;
+        transform.eulerAngles = rotation; // Rotation may not matter for the bullet.... unsure tho so I'll leave it :P
+        rb.AddForce(new Vector2(rotation.x, rotation.y));
+    }
 	/* Handles walls, players, and other bullets. */
 	void OnCollisionEnter2D (Collision2D coll) {
 		if (coll.gameObject.tag == "Bullet") {
 			// Add X points to the player's score
 			rb.velocity = (Vector2.zero);
 			audio.PlayOneShot(cancel);
-			Invoke("Destroy", cancel.length);
-		}
-		if (coll.gameObject.tag == "Wall") {
+			Invoke("Hide", cancel.length);
+		}else if (coll.gameObject.tag == "Wall") {
 			audio.PlayOneShot(bounce); }
 	}
 		
