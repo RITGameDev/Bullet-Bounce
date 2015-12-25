@@ -14,7 +14,7 @@ public class ControlGun : MonoBehaviour {
         Vector2 offset = new Vector2(1000, 1000);
 
         for (int i = 0; i < maxBullets; i++){
-            bullets[i] = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+            bullets[i] = Instantiate(bullet, offset, transform.rotation) as GameObject;
         }
     }
 
@@ -28,6 +28,5 @@ public class ControlGun : MonoBehaviour {
 	void Shoot(){
         bullets[bulletIndex].gameObject.transform.GetComponent<Bullet>().Renew(transform.position, (transform.rotation * Vector3.up).normalized * 0.1f);
         bulletIndex = (bulletIndex + 1) % maxBullets;
-        print("argh");
     }
 }
