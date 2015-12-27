@@ -6,13 +6,16 @@ public class Player : MonoBehaviour {
     public AudioClip lose;
     new public Camera camera;
 
-	float speed = .375f;
+	float speed = 20f;
     Vector3 screenPos;
 
     new AudioSource audio;
+    Rigidbody2D rb;
 
-    void Awake () {
-		audio = GetComponent<AudioSource>();
+    void Awake ()
+    {
+        audio = GetComponent<AudioSource>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
 	void Update () {
@@ -36,15 +39,28 @@ public class Player : MonoBehaviour {
             transform.rotation = Quaternion.Euler(0, 0, 90 - Mathf.Rad2Deg * Mathf.Asin((target.y - screenPos.y) / hypotenuse));
     }
 	/* Handles directional user input by checking the keycodes. Also handles bounds. */
-	void Movement() {
-		if (Input.GetKey(up) && transform.position.y < 12)
-			transform.Translate(Vector2.up * speed, Space.World);
-		else if (Input.GetKey(down) && transform.position.y > -12)
-			transform.Translate(-Vector2.up * speed, Space.World);
-		if (Input.GetKey(left) && transform.position.x > -32)
-			transform.Translate(-Vector2.right * speed, Space.World);
-		else if (Input.GetKey(right) && transform.position.x < 32)
-			transform.Translate(Vector2.right * speed, Space.World);
+	void Movement(){
+        bool verticalMovement = true;
+        bool horizontalMovement = true;
+
+        if (Input.GetKey(up))
+            rb.velocity = Vector2.up * speed;
+        else if (Input.GetKey(down))
+            rb.velocity = -Vector2.up * speed;
+        else
+            verticalMovement = false;
+
+        if (Input.GetKey(left))
+            rb.velocity = -Vector2.right * speed;
+        else if (Input.GetKey(right))
+            rb.velocity = Vector2.right * speed;
+        else
+            horizontalMovement = false;
+
+        if(!verticalMovement && !horizontalMovement){
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = 0;
+        }
 
         screenPos = camera.WorldToScreenPoint(transform.position);
 	}
