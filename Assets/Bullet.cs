@@ -23,7 +23,7 @@ public class Bullet : MonoBehaviour {
 	}
     void Update(){
         distanceTraveled = Mathf.Pow(Mathf.Pow(transform.position.x - originalPosition.x, 2) + Mathf.Pow(transform.position.y - originalPosition.y, 2), 0.5f);
-        if (!hitbox.enabled && distanceTraveled > 50)
+        if (!hitbox.enabled && distanceTraveled > 1)
             hitbox.enabled = true;
     }
 	/* Destroys the bullet; is called after the sound plays. */
@@ -41,13 +41,22 @@ public class Bullet : MonoBehaviour {
     }
 	/* Handles walls, players, and other bullets. */
 	void OnCollisionEnter2D (Collision2D coll) {
-		if (coll.gameObject.tag == "Bullet") {
+		if (coll.gameObject.tag.Equals("Bullet")) {
 			// Add X points to the player's score
 			rb.velocity = (Vector2.zero);
 			audio.PlayOneShot(cancel);
 			Invoke("Hide", cancel.length);
-		}else if (coll.gameObject.tag == "Wall") {
-			audio.PlayOneShot(bounce); }
-	}
+		}
+        else if (coll.gameObject.tag.Equals("Wall"))
+        {
+            audio.PlayOneShot(bounce);
+        }else if (coll.gameObject.tag.Equals("Player")) {
+            Hide();
+        }
+    }
+
+    public float getDistanceTraveled(){
+        return distanceTraveled;
+    }
 		
 }

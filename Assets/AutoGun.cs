@@ -18,9 +18,8 @@ public class AutoGun : MonoBehaviour {
         bullets = new GameObject[maxBullets];
         Vector3 offset = new Vector3(1000, 1000, 0);
 
-        for (int i = 0; i < maxBullets; i++){
+        for (int i = 0; i < maxBullets; i++)
             bullets[i] = Instantiate(bullet, offset, transform.rotation) as GameObject;
-        }
 
         InvokeRepeating("Shoot", 1f, 1f);
     }
