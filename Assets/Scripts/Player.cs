@@ -4,12 +4,12 @@ using System.Collections;
 public class Player : MonoBehaviour {
     public KeyCode up, down, left, right;
     public AudioClip lose;
-    new public Camera camera;
-
+    public Camera camera;
+	public LivesManager Lives;
 	float speed = 20f;
     Vector3 screenPos;
 
-    new AudioSource audio;
+    public AudioSource audio;
     Rigidbody2D rb;
 
     void Awake ()
@@ -72,7 +72,11 @@ public class Player : MonoBehaviour {
 
 	/* Checks for collisions with bullets. */
 	void OnCollisionEnter2D(Collision2D coll) {
-		if (coll.gameObject.tag == "Bullet")
-			audio.PlayOneShot(lose);
+		if (coll.gameObject.tag == "Bullet"){
+			if (!(coll.gameObject.GetComponent<Bullet> ().IsReady ()))
+				return;
+			audio.PlayOneShot (lose);
+			Lives.Decrease ();
+		}
 	}
 }

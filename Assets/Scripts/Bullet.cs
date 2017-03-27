@@ -5,6 +5,7 @@ public class Bullet : MonoBehaviour {
 	public AudioClip cancel;
 	public AudioClip bounce;
 
+	int timeDown = 15;
     float distanceTraveled = 0;
     Vector3 originalPosition;
 
@@ -25,6 +26,7 @@ public class Bullet : MonoBehaviour {
         distanceTraveled = Mathf.Pow(Mathf.Pow(transform.position.x - originalPosition.x, 2) + Mathf.Pow(transform.position.y - originalPosition.y, 2), 0.5f);
         if (!hitbox.enabled && distanceTraveled > 1)
             hitbox.enabled = true;
+		timeDown--;
     }
 	/* Destroys the bullet; is called after the sound plays. */
 	void Hide() {
@@ -43,6 +45,7 @@ public class Bullet : MonoBehaviour {
 	void OnCollisionEnter2D (Collision2D coll) {
 		if (coll.gameObject.tag.Equals("Bullet")) {
 			// Add X points to the player's score
+			GameManager.Instance.BulletsHitEachOther();
 			rb.velocity = (Vector2.zero);
 			audio.PlayOneShot(cancel);
 			Invoke("Hide", cancel.length);
@@ -50,10 +53,14 @@ public class Bullet : MonoBehaviour {
         else if (coll.gameObject.tag.Equals("Wall"))
         {
             audio.PlayOneShot(bounce);
-        }else if (coll.gameObject.tag.Equals("Player")) {
+		}else if (coll.gameObject.tag.Equals("Player")&&timeDown<=0) {
             Hide();
         }
     }
+
+	public bool IsReady(){
+		return timeDown <= 0;
+	}
 
     public float getDistanceTraveled(){
         return distanceTraveled;

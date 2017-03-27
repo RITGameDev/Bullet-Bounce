@@ -3,7 +3,6 @@ using System.Collections;
 
 public class ControlGun : MonoBehaviour {
 	public GameObject bullet;
-
     int bulletIndex = 0;
     int maxBullets = 50;
 
