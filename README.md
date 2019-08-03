@@ -1,3 +1,3 @@
 # Bullet-Bounce
 Arcade-style survival danmaku.
-[![BB](BB.gif)]
+![BB](BB.gif)
