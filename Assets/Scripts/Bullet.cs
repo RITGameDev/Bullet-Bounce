@@ -4,8 +4,10 @@ using System.Collections;
 public class Bullet : MonoBehaviour {
 	public AudioClip cancel;
 	public AudioClip bounce;
-
-	int timeDown = 15;
+    Color raw = Color.blue;
+    Color pain = Color.red;
+    public Color Current;
+	public int timeDown =   200;
     float distanceTraveled = 0;
     Vector3 originalPosition;
 
@@ -16,7 +18,9 @@ public class Bullet : MonoBehaviour {
     /* Gets the components and moves the bullet. */
     void Awake() {
         originalPosition = transform.position;
-		hitbox = GetComponent<Collider2D>();
+        raw = GetComponent<SpriteRenderer>().color;
+
+        hitbox = GetComponent<Collider2D>();
 		hitbox.enabled = false;
 		rb = GetComponent<Rigidbody2D>();
 		audio = GetComponent<AudioSource>();
@@ -24,9 +28,13 @@ public class Bullet : MonoBehaviour {
 	}
     void Update(){
         distanceTraveled = Mathf.Pow(Mathf.Pow(transform.position.x - originalPosition.x, 2) + Mathf.Pow(transform.position.y - originalPosition.y, 2), 0.5f);
-        if (!hitbox.enabled && distanceTraveled > 1)
+        if (!hitbox.enabled && distanceTraveled > 2)
             hitbox.enabled = true;
-		timeDown--;
+        Time.timeScale = 1.2f;
+        if(timeDown>0)
+            timeDown--;
+
+        GetComponent<SpriteRenderer>().color = Current = Color.Lerp(pain, raw, mapClamped(timeDown, 0, 1500, 0.0f, 1.0f));
     }
 	/* Destroys the bullet; is called after the sound plays. */
 	void Hide() {
@@ -39,7 +47,9 @@ public class Bullet : MonoBehaviour {
         Hide();
         transform.position = originalPosition = position;
         transform.eulerAngles = rotation; // Rotation may not matter for the bullet.... unsure tho so I'll leave it :P
-        rb.AddForce(new Vector2(rotation.x, rotation.y));
+        rb.AddForce(new Vector2(rotation.x, rotation.y)*1.6f/5f);
+        Current = Color.blue;
+        timeDown = 100;
     }
 	/* Handles walls, players, and other bullets. */
 	void OnCollisionEnter2D (Collision2D coll) {
@@ -59,11 +69,16 @@ public class Bullet : MonoBehaviour {
     }
 
 	public bool IsReady(){
-		return timeDown <= 0;
+        bool b = timeDown <= 0;
+        return b;
 	}
 
     public float getDistanceTraveled(){
         return distanceTraveled;
     }
-		
+	
+    public float mapClamped(float r, float a, float b, float c, float d)
+    {
+        return ((r - a) / (b - a)) * (d - c) + c;
+    }
 }

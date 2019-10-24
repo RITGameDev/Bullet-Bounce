@@ -44,24 +44,22 @@ public class Player : MonoBehaviour {
         bool horizontalMovement = true;
 
         if (Input.GetKey(up))
-            rb.velocity = Vector2.up * speed;
+            rb.velocity = Vector2.up;
         else if (Input.GetKey(down))
-            rb.velocity = -Vector2.up * speed;
+            rb.velocity = -Vector2.up;
         else
-            verticalMovement = false;
+            rb.velocity = Vector2.zero;
 
         if (Input.GetKey(left))
-            rb.velocity = -Vector2.right * speed;
+            rb.velocity += -Vector2.right;
         else if (Input.GetKey(right))
-            rb.velocity = Vector2.right * speed;
-        else
-            horizontalMovement = false;
+            rb.velocity += Vector2.right;
 
-        if(!verticalMovement && !horizontalMovement){
-            rb.velocity = Vector3.zero;
+        rb.velocity = rb.velocity.normalized * speed;
+
+        if(rb.velocity.magnitude<0.01f){
             rb.angularVelocity = 0;
         }
-
         screenPos = camera.WorldToScreenPoint(transform.position);
 	}
 

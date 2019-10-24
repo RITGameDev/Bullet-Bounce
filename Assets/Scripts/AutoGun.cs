@@ -21,7 +21,7 @@ public class AutoGun : MonoBehaviour {
         for (int i = 0; i < maxBullets; i++)
             bullets[i] = Instantiate(bullet, offset, transform.rotation) as GameObject;
 
-        InvokeRepeating("Shoot", 1f, 1f);
+        InvokeRepeating("Shoot", 2f, 2f);
     }
 
 	/* Rotates the gun around the player. */

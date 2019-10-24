@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour {
 
 	public void EndGame(){
 		IsPlaying = false;
+		GameObject.Find ("EndGameScreen").GetComponent<EndScreen> ().FadeIn ();
 		Destroy(GameObject.Find ("P1"));
 	}
 
